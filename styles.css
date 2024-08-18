@@ -1,0 +1,196 @@
+﻿/* Base Styles */
+body {
+    background-color: #f4f4f9;
+    padding: 15px;
+    max-width: 300px;
+    min-width: 300px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0;
+    overflow: hidden;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-right: 10px; /* Add padding to the right */
+}
+
+.header-buttons {
+    display: flex;
+    gap: 5px; /* Space between the buttons */
+}
+
+.help-button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2a9d8f;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+    .help-button:hover {
+        color: #21867a;
+    }
+
+h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2a9d8f;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.close-button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e76f51;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    margin-right: 10px; /* Bring the button in by 10px */
+}
+
+    .close-button:hover {
+        color: #2a9d8f;
+    }
+
+.text-box {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #2a9d8f;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    color: #333;
+    outline: none;
+    overflow-y: auto;
+    transition: border-color 0.3s ease;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    max-height: 280px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+    .text-box:focus {
+        border-color: #2a9d8f;
+    }
+
+.text-content {
+    font-family: inherit;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: transparent; /* No background color for the track */
+    accent-color: #2a9d8f; /* Matches the title text color */
+}
+
+.highlight {
+    background-color: yellow;
+    color: black; /* Ensure text is black when highlighted */
+}
+
+dialog {
+    width: 230px; /* Reduced the width to make it narrower */
+    max-width: 90%; /* Ensures it doesn't go too wide on small screens */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.about-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-right: 10px; /* Add padding to the right of the close button */
+}
+
+    .about-header h2 {
+        flex-grow: 1;
+        margin: 0;
+        text-align: center;
+    }
+
+    .about-header .close-button {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%); /* Vertically center the button */
+        margin-right: 10px; /* Add padding to the right */
+    }
+
+.about-content {
+    padding-top: 10px; /* Space below the header */
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+
+    .header h1, .about-header h2, .help-button {
+        color: #80cbc4;
+    }
+
+    .close-button {
+        color: #ff8a80;
+    }
+
+        .close-button:hover {
+            color: #80cbc4;
+        }
+
+    .text-box {
+        background-color: #333333;
+        color: #ffffff;
+        border: 2px solid #80cbc4;
+    }
+
+        .text-box:focus {
+            border-color: #ff8a80;
+        }
+
+    input[type="range"] {
+        background-color: transparent;
+        accent-color: #80cbc4; /* Matches the title text color */
+    }
+
+    dialog {
+        background-color: #333333;
+        color: #ffffff;
+    }
+
+        dialog h2 {
+            color: #80cbc4;
+        }
+
+        dialog button {
+            background-color: #ff8a80;
+            color: #000000;
+        }
+
+            dialog button:hover {
+                background-color: #80cbc4;
+            }
+}

@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Talk-To-Me</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Talk-To-Me</h1>
+        <div class="header-buttons">
+            <button id="helpButton" class="help-button">?</button>
+            <button id="closeButton" class="close-button">X</button>
+        </div>
+    </div>
+    <div id="textToSpeak" contenteditable="true" class="text-box" placeholder="Type text here..."></div><br>
+
+    <label for="rateSlider">Speed:</label>
+    <input type="range" id="rateSlider" min="0.5" max="2" value="1" step="0.1">
+
+    <!-- About Dialog -->
+    <dialog id="aboutDialog">
+        <div class="about-header">
+            <h2>About</h2>
+            <button id="closeAboutButton" class="close-button">X</button>
+        </div>
+        <div class="about-content">
+            <p>Developed by: Jeff Heisler</p>
+            <p>Contact: jrheisler@yahoo.com</p>
+            <p>v 1.0</p>
+
+            <h3>How to Use:</h3>
+            <ul>
+                <li><strong>Highlight Text:</strong> Highlight the text on any webpage, then click the Talk-To-Me extension. It will automatically start reading the highlighted text aloud.</li>
+                <li><strong>Pause and Resume:</strong> Click on the text area in the popup to pause and resume the speech at any time.</li>
+                <li><strong>Support the Developer:</strong> If you enjoy using Talk-To-Me, consider supporting the developer by buying them a cup of coffee. Your support helps maintain and improve the extension!</li>
+            </ul>
+        </div>
+        <!-- PayPal Donation Button with Image -->
+        <p>
+            <a href="https://www.paypal.com/ncp/payment/7TLSYALY3B2DN" target="_blank">
+                <img src="icons/coffee128.png" alt="Donate" style="width: 128px; height: 128px; cursor: pointer;">
+            </a>
+        </p>
+    </dialog>
+
+    <script src="popup.js"></script>
+</body>
+</html>
