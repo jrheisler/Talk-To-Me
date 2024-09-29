@@ -82,9 +82,20 @@ function startSpeaking() {
     isSpeaking = true;
     currentCharIndex = 0; // Reset character index
     textBox.style.borderColor = "#2a9d8f"; // Ensure the border is reset on start
-    speechSynthesis.speak(utterance);
 
-    updateCurrentCharIndex();
+    // Update character index as words are spoken
+    utterance.onboundary = function (event) {
+        if (event.name === 'word') {
+            currentCharIndex = event.charIndex;
+            highlightSpokenWord(currentCharIndex);
+        }
+    };
+
+    utterance.onend = function () {
+        isSpeaking = false;
+    };
+
+    speechSynthesis.speak(utterance);
 }
 
 function startSpeakingFrom(index) {
@@ -97,20 +108,19 @@ function startSpeakingFrom(index) {
     utterance.rate = rateSlider.value; // Set the speech rate based on slider value
     isSpeaking = true;
 
-    speechSynthesis.speak(utterance);
-
-    // Start highlighting and tracking from the given index
-    updateCurrentCharIndex();
-}
-
-// Function to update the current character index during speech
-function updateCurrentCharIndex() {
+    // Update character index as words are spoken
     utterance.onboundary = function (event) {
         if (event.name === 'word') {
-            currentCharIndex += event.charLength; // Update the global index
+            currentCharIndex = index + event.charIndex;
             highlightSpokenWord(currentCharIndex);
         }
     };
+
+    utterance.onend = function () {
+        isSpeaking = false;
+    };
+
+    speechSynthesis.speak(utterance);
 }
 
 // Function to highlight the spoken word

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Talk-To-Me",
-  "version": "1.0",
-  "description": "Text-to-Speech Chrome Extension",
+  "version": "1.1",
+  "description": "Text-to-Speech Chrome Extension. Highlight the text, and click the extension",
   "action": {
     "default_popup": "popup.html"
   },
