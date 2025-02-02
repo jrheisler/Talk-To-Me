@@ -1,0 +1,192 @@
+﻿/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set a constant line height for better spacing */
+body, p, ul, li, h1, h2, h3, label {
+  line-height: 1.6;
+}
+
+/* Full-Screen Dark Mode Layout */
+body {
+  background-color: #121212;
+  color: #ffffff;
+  padding: 20px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Centering Container */
+.container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header Styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  color: #80cbc4;
+}
+
+/* Top and Bottom Button Containers */
+.top-buttons,
+.bottom-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Text Box Styling */
+.text-box {
+  width: 100%;
+  min-height: 300px;
+  padding: 10px;
+  border: 2px solid #80cbc4;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #333333;
+  color: #ffffff;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+/* Placeholder styling */
+.text-box:empty:before {
+  content: attr(placeholder);
+  color: #aaaaaa;
+}
+
+/* Highlighted word style */
+.highlight {
+  background-color: #f9a825;
+  color: #000000;
+}
+
+/* Help button icon styling */
+.help-button img {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+/* Button Styles */
+
+.close-button,
+#chooseFileButton,
+#stopButton,
+#stopButtonTop,
+#pasteButton {
+  background-color: transparent;
+  border: 1px solid #80cbc4;
+  color: #80cbc4;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.help-button:hover,
+.close-button:hover,
+#chooseFileButton,
+#stopButton:hover,
+#stopButtonTop:hover,
+#pasteButton:hover {
+  background-color: #80cbc4;
+  color: #121212;
+}
+
+/* Range Slider Styling */
+input[type="range"] {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Speed slider labels */
+.rate-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  padding: 0 5px;
+  color: #cccccc;
+}
+
+/* Word Count Display */
+.word-count {
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+/* Dialog (About) Styling */
+dialog {
+  background-color: #333333;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+.about-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.about-header h2 {
+  flex: 1;
+  color: #80cbc4;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  .text-box {
+    min-height: 200px;
+  }
+}
+/* Instruction text above the drop zone */
+.drop-instruction {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #cccccc;
+}
+
+/* Highlight drop zone during drag-over */
+.text-box.dragover {
+  border-color: #f9a825;
+  background-color: #444444;
+}
+/* File Picker Container for Choose File and Paste buttons */
+.file-picker {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Ensure the hidden file input remains hidden */
+#fileInput {
+  display: none;
+}
