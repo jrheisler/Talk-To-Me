@@ -10,45 +10,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
     <!-- Include pdf.js for PDF processing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <!-- Include dialog-polyfill JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>Talk-To-Me 1.6</h1>
+        <h1>Talk-To-Me</h1>
         <!-- File Picker Container: Choose File and Paste buttons side-by-side -->
         <div class="file-picker">
             <button id="chooseFileButton">Choose File</button>
             <!-- Hidden file input -->
             <input type="file" id="fileInput" accept=".pdf,.docx,.txt" style="display:none;">
-        </div>
-        <div class="header-buttons">
+            <button id="restartButton">Restart</button>
+            <button id="stopButton">Stop</button>
+            <button id="jumpBackButton">« 10s</button>
+            <button id="jumpForwardButton">10s »</button>
+            <button id="pasteButton">Paste</button>
             <button id="helpButton" class="help-button">
                 <img src="icons/icon32.png" alt="About">
             </button>
         </div>
-    </div>
-    <!-- Bottom button container for Stop and paste, now on top -->
-    <div class="bottom-buttons">
-        <button id="stopButton">Stop</button>
-        <button id="pasteButton">Paste</button>
+        <!-- Speed slider and labels -->
+        <label for="rateSlider">Speed:</label>
+        <input type="range" id="rateSlider" min="0.5" max="4" value="1" step="0.1">
+        <div class="rate-labels">
+            <span>1x</span>
+            <span>2x</span>
+            <span>3x</span>
+            <span>4x</span>
+        </div>
+        <div id="wordCount" class="word-count"></div>
+
     </div>
 
-    <!-- Speed slider and labels -->
-    <label for="rateSlider">Speed:</label>
-    <input type="range" id="rateSlider" min="0.5" max="4" value="1" step="0.1">
-    <div class="rate-labels">
-        <span>1x</span>
-        <span>2x</span>
-        <span>3x</span>
-        <span>4x</span>
-    </div>
-    <div id="wordCount" class="word-count"></div>
+
     <!-- Editable text area now serves as the drop zone -->
     <div id="textToSpeak" contenteditable="true" class="text-box" placeholder="Press the Paste button, or Drop a DOCX, PDF, or TXT File..."></div>
-
-
-
-
 
 
     <!-- About Dialog -->
@@ -60,7 +58,7 @@
         <div class="about-content">
             <p>Developed by: Jeff Heisler</p>
             <p>Contact: jrheisler@yahoo.com</p>
-            <p>v 1.0</p>
+            <p>v 1.7</p>
             <h3>How to Use:</h3>
             <ul>
                 <li><strong>Choose File:</strong> Click the "Choose File" button to select a PDF, DOCX, or TXT file.</li>

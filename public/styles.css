@@ -1,4 +1,8 @@
 ﻿/* Global Reset */
+<!-- Include dialog-polyfill CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.css" />
+
+
 * {
   margin: 0;
   padding: 0;
@@ -21,34 +25,41 @@ body {
   flex-direction: column;
   overflow-y: auto;
   font-family: Arial, sans-serif;
+  padding-top: 100px; /* Adjust this value based on the combined height of the header and bottom buttons */
+  padding-bottom: 60px; /* Adjust this value based on the height of the bottom buttons */
 }
 
 /* Centering Container */
 .container {
-  max-width: 800px;
-  width: 100%;
+  width: 80%;
   margin: 0 auto;
 }
 
+
+.header,
+.top-buttons,
+.bottom-buttons {
+  width: 100%;
+  max-width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
 /* Header Styling */
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  position: fixed;
+  top: 0;
+  width: 98%;          /* Reduced width to leave space on left/right */
+  background: #121212; /* Dark background for header */
+  z-index: 1000;       /* Ensure the header stays on top */
+  padding: 10px;       /* Uniform padding on all sides */
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .header h1 {
   color: #80cbc4;
 }
 
-/* Top and Bottom Button Containers */
-.top-buttons,
-.bottom-buttons {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
 
 /* Text Box Styling */
 .text-box {
@@ -62,7 +73,9 @@ body {
   color: #ffffff;
   overflow-y: auto;
   margin-bottom: 10px;
+  white-space: pre-wrap; /* Preserve whitespace and line breaks */
 }
+
 
 /* Placeholder styling */
 .text-box:empty:before {
@@ -84,7 +97,6 @@ body {
 }
 
 /* Button Styles */
-
 .close-button,
 #chooseFileButton,
 #stopButton,
@@ -102,18 +114,67 @@ body {
 
 .help-button:hover,
 .close-button:hover,
-#chooseFileButton,
+#chooseFileButton:hover,
 #stopButton:hover,
 #stopButtonTop:hover,
 #pasteButton:hover {
   background-color: #80cbc4;
   color: #121212;
 }
+.file-picker #restartButton {
+  background-color: transparent !important;
+  border: 1px solid #80cbc4 !important;
+  color: #80cbc4 !important;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.file-picker #restartButton:hover {
+  background-color: #80cbc4 !important;
+  color: #121212 !important;
+}
+
 
 /* Range Slider Styling */
 input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
+  height: 8px;
+  background: #777777; /* Lighter track for better contrast */
+  border-radius: 5px;
   margin-bottom: 10px;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #80cbc4; /* Thumb color */
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #80cbc4;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  background: #80cbc4;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 /* Speed slider labels */
@@ -166,6 +227,7 @@ dialog {
     min-height: 200px;
   }
 }
+
 /* Instruction text above the drop zone */
 .drop-instruction {
   text-align: center;
@@ -178,15 +240,41 @@ dialog {
   border-color: #f9a825;
   background-color: #444444;
 }
-/* File Picker Container for Choose File and Paste buttons */
-.file-picker {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+
+/* File Picker Buttons Styling */
+.file-picker button {
+  background-color: transparent;
+  border: 1px solid #80cbc4;
+  color: #80cbc4;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
 }
+
+.file-picker button:hover {
+  background-color: #80cbc4;
+  color: #121212;
+}
+
+
 
 /* Ensure the hidden file input remains hidden */
 #fileInput {
   display: none;
 }
+
+/* Make the text area full screen (between the header and bottom buttons) */
+/* Adjust the text area so it leaves a 10px gap on both sides */
+#textToSpeak {
+  position: absolute;
+  top: 310px;      /* Adjust as needed */
+  bottom: 20px;    /* Adjust as needed */
+  left: 10px;
+  right: 10px;
+  width: calc(100vw - 40px);  /* Full viewport width minus 10px on each side */
+  box-sizing: border-box;
+}
+

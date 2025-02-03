@@ -1,17 +1,55 @@
 // popup.js – Complete Updated File
 
 // Get DOM elements
+
 const textBox = document.getElementById("textToSpeak");
 const rateSlider = document.getElementById("rateSlider");
 const helpButton = document.getElementById("helpButton");
 const aboutDialog = document.getElementById("aboutDialog");
 const closeAboutButton = document.getElementById("closeAboutButton");
 const stopButton = document.getElementById("stopButton");
-const stopButtonTop = document.getElementById("stopButtonTop");
 const pasteButton = document.getElementById("pasteButton");
 const wordCountElement = document.getElementById("wordCount");
 const fileInput = document.getElementById("fileInput");
 const chooseFileButton = document.getElementById("chooseFileButton");
+const restartButton = document.getElementById("restartButton");
+const jumpBackButton = document.getElementById("jumpBackButton");
+const jumpForwardButton = document.getElementById("jumpForwardButton");
+
+// Helper: Calculate character offset for a 10-second jump
+function getJumpOffset() {
+  // At 150 wpm, there are 2.5 words per second.
+  // Assuming ~6 characters per word gives about 15 characters per second.
+  // Multiply by currentRate and 10 seconds.
+  return Math.round(150 * parseFloat(rateSlider.value));
+}
+
+// Jump Back button: Move speech back 10 seconds
+jumpBackButton.addEventListener("click", () => {
+  let offset = getJumpOffset();
+  // Ensure we don't go before the beginning of the text.
+  currentCharIndex = Math.max(0, currentCharIndex - offset);
+  speechSynthesis.cancel();
+  startSpeakingFrom(currentCharIndex);
+  stopButton.innerText = "Stop"; // Reset button text
+});
+
+// Jump Forward button: Move speech forward 10 seconds
+jumpForwardButton.addEventListener("click", () => {
+  let offset = getJumpOffset();
+  // Ensure we don't go beyond the text length.
+  currentCharIndex = Math.min(textBox.innerText.length, currentCharIndex + offset);
+  speechSynthesis.cancel();
+  startSpeakingFrom(currentCharIndex);
+  stopButton.innerText = "Stop"; // Reset button text
+});
+
+
+// Register the dialog with the polyfill if it doesn't have the native showModal() method
+if (!('showModal' in HTMLDialogElement.prototype)) {
+  dialogPolyfill.registerDialog(aboutDialog);
+}
+
 
 let utterance = null;
 let isSpeaking = false;
@@ -74,7 +112,20 @@ fileInput.addEventListener("change", () => {
   const files = fileInput.files;
   if (files.length > 0) {
     processFile(files[0]);
+    stopButton.innerText = "Stop"; // Reset button text
   }
+});
+
+restartButton.addEventListener("click", () => {
+  // Cancel any ongoing speech
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+  }
+  // Reset the current character index to 0
+  stopButton.innerText = "Stop"; // Reset button text
+  currentCharIndex = 0;
+  // Start speaking from the beginning
+  startSpeaking();
 });
 
 // Paste button: read clipboard text and start speech
@@ -82,11 +133,10 @@ pasteButton.addEventListener("click", async () => {
   try {
     const clipboardText = await navigator.clipboard.readText();
     if (clipboardText) {
-      textBox.innerText = clipboardText;
+      stopButton.innerText = "Stop"; // Reset button text
+      textBox.innerHTML = clipboardText;
       updateWordCount();
       startSpeaking();
-      stopButtonTop.innerText = "Stop"; // Reset button text
-      stopButton.innerText = "Stop"; // Reset button text
     }
   } catch (err) {
     console.error("Error reading clipboard:", err);
@@ -109,32 +159,14 @@ stopButton.addEventListener("click", () => {
     isSpeaking = false;
     textBox.style.borderColor = "";
     stopButton.innerText = "Start";
-    stopButtonTop.innerText = "Start";
   } else {
     if (textBox.innerText.trim() !== "") {
       startSpeakingFrom(currentCharIndex);
       stopButton.innerText = "Stop";
-      stopButtonTop.innerText = "Stop";
     }
   }
 });
 
-// Stop/Start button: toggle speech synthesis
-stopButtonTop.addEventListener("click", () => {
-  if (isSpeaking) {
-    speechSynthesis.cancel();
-    isSpeaking = false;
-    textBox.style.borderColor = "";
-    stopButton.innerText = "Start";
-    stopButtonTop.innerText = "Start";
-  } else {
-    if (textBox.innerText.trim() !== "") {
-      startSpeakingFrom(currentCharIndex);
-      stopButton.innerText = "Stop";
-      stopButtonTop.innerText = "Stop";
-    }
-  }
-});
 // Process file based on type (TXT, DOCX, PDF)
 function processFile(file) {
   const fileName = file.name.toLowerCase();
@@ -170,10 +202,28 @@ function processFile(file) {
       const reader = new FileReader();
       reader.onload = function(e) {
         const arrayBuffer = e.target.result;
+        mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+          .then(result => {
+            // Create a temporary element to extract plain text
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = result.value;
+            const extractedText = tempDiv.innerText;
+            textBox.innerText = extractedText;
+            updateWordCount();
+            startSpeaking();
+          })
+          .catch(error => {
+            console.error("Error processing DOCX file:", error);
+            textBox.innerText = "Error processing DOCX file.";
+            updateWordCount();
+          });
+
         mammoth.extractRawText({ arrayBuffer: arrayBuffer })
           .then(function(result) {
             console.log("Mammoth raw text extraction result:", result);
-            const extractedText = result.value;
+            let extractedText = result.value;
+            extractedText = extractedText.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+            extractedText = extractedText.replace(/\s+/g, ' ').trim();
             textBox.innerText = extractedText;
             updateWordCount();
             startSpeaking();
@@ -270,7 +320,6 @@ function startSpeaking() {
     isSpeaking = false;
     textBox.style.borderColor = "";
     stopButton.innerText = "Stop";
-    stopButtonTop.innerText = "Stop";
   };
 
   speechSynthesis.speak(utterance);
@@ -295,7 +344,6 @@ function startSpeakingFrom(index) {
     isSpeaking = false;
     textBox.style.borderColor = "";
     stopButton.innerText = "Stop";
-    stopButtonTop.innerText = "Stop";
   };
 
   speechSynthesis.speak(utterance);
@@ -319,15 +367,22 @@ function highlightSpokenWord(charIndex) {
   textBox.innerHTML = `${before}<span class="highlight">${word}</span>${after}`;
 
   const highlightElement = textBox.querySelector(".highlight");
-  if (highlightElement) {
-    highlightElement.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+//  if (highlightElement) {
+//    highlightElement.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+//  }
+if (highlightElement.scrollIntoViewIfNeeded) {
+  highlightElement.scrollIntoViewIfNeeded({ behavior: "smooth" });
+} else {
+  highlightElement.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+}
+
 }
 
 // --- ABOUT DIALOG ---
 closeAboutButton.addEventListener("click", () => {
   aboutDialog.close();
 });
+
 helpButton.addEventListener("click", () => {
   aboutDialog.showModal();
 });
