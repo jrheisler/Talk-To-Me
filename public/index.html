@@ -23,7 +23,7 @@
             <!-- Hidden file input -->
             <input type="file" id="fileInput" accept=".pdf,.docx,.txt" style="display:none;">
             <button id="restartButton">Restart</button>
-            <button id="stopButton">Stop</button>
+            <button id="stopButton">Stop/Start</button>
             <button id="jumpBackButton">« 10s</button>
             <button id="jumpForwardButton">10s »</button>
             <button id="pasteButton">Paste</button>
@@ -46,7 +46,7 @@
 
 
     <!-- Editable text area now serves as the drop zone -->
-    <div id="textToSpeak" contenteditable="true" class="text-box" placeholder="Press the Paste button, or Drop a DOCX, PDF, or TXT File..."></div>
+    <div id="textToSpeak" contenteditable="true" class="text-box" placeholder="Press the Paste button, or Drop a DOCX, PDF, or TXT File... While playing, click to pause, click to restart, or ALT-Click to restart at the spot of click"></div>
 
 
     <!-- About Dialog -->
@@ -58,7 +58,7 @@
         <div class="about-content">
             <p>Developed by: Jeff Heisler</p>
             <p>Contact: jrheisler@yahoo.com</p>
-            <p>v 1.7</p>
+            <p>v 1.8</p>
             <h3>How to Use:</h3>
             <ul>
                 <li><strong>Choose File:</strong> Click the "Choose File" button to select a PDF, DOCX, or TXT file.</li>

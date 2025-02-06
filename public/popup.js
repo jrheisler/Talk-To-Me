@@ -31,7 +31,6 @@ jumpBackButton.addEventListener("click", () => {
   currentCharIndex = Math.max(0, currentCharIndex - offset);
   speechSynthesis.cancel();
   startSpeakingFrom(currentCharIndex);
-  stopButton.innerText = "Stop"; // Reset button text
 });
 
 // Jump Forward button: Move speech forward 10 seconds
@@ -41,7 +40,6 @@ jumpForwardButton.addEventListener("click", () => {
   currentCharIndex = Math.min(textBox.innerText.length, currentCharIndex + offset);
   speechSynthesis.cancel();
   startSpeakingFrom(currentCharIndex);
-  stopButton.innerText = "Stop"; // Reset button text
 });
 
 
@@ -112,7 +110,6 @@ fileInput.addEventListener("change", () => {
   const files = fileInput.files;
   if (files.length > 0) {
     processFile(files[0]);
-    stopButton.innerText = "Stop"; // Reset button text
   }
 });
 
@@ -122,7 +119,6 @@ restartButton.addEventListener("click", () => {
     speechSynthesis.cancel();
   }
   // Reset the current character index to 0
-  stopButton.innerText = "Stop"; // Reset button text
   currentCharIndex = 0;
   // Start speaking from the beginning
   startSpeaking();
@@ -133,8 +129,8 @@ pasteButton.addEventListener("click", async () => {
   try {
     const clipboardText = await navigator.clipboard.readText();
     if (clipboardText) {
-      stopButton.innerText = "Stop"; // Reset button text
       textBox.innerHTML = clipboardText;
+      textBox.innerText = clipboardText;
       updateWordCount();
       startSpeaking();
     }
@@ -158,11 +154,9 @@ stopButton.addEventListener("click", () => {
     speechSynthesis.cancel();
     isSpeaking = false;
     textBox.style.borderColor = "";
-    stopButton.innerText = "Start";
   } else {
     if (textBox.innerText.trim() !== "") {
       startSpeakingFrom(currentCharIndex);
-      stopButton.innerText = "Stop";
     }
   }
 });
@@ -319,13 +313,13 @@ function startSpeaking() {
   utterance.onend = function() {
     isSpeaking = false;
     textBox.style.borderColor = "";
-    stopButton.innerText = "Stop";
   };
 
   speechSynthesis.speak(utterance);
 }
 
 function startSpeakingFrom(index) {
+  console.log("Starting speech from index:", index);
   const text = textBox.innerText;
   if (!text || index >= text.length) return;
   const remainingText = text.slice(index);
@@ -343,7 +337,6 @@ function startSpeakingFrom(index) {
   utterance.onend = function() {
     isSpeaking = false;
     textBox.style.borderColor = "";
-    stopButton.innerText = "Stop";
   };
 
   speechSynthesis.speak(utterance);
@@ -389,6 +382,7 @@ helpButton.addEventListener("click", () => {
 
 // --- INITIAL UPDATE ---
 updateWordCount();
+/*
 textBox.addEventListener("click", (e) => {
   // Remove focus to prevent interference with editing behavior.
   textBox.blur();
@@ -405,3 +399,72 @@ textBox.addEventListener("click", (e) => {
     startSpeaking();
   }
 });
+*/
+textBox.addEventListener("click", (e) => {
+  // If Alt is pressed, we want to restart from the clicked position.
+  if (e.altKey) {
+    // Focus the text box so the browser updates the selection/caret
+    textBox.focus();
+    // Use a small delay to ensure the selection is updated.
+    setTimeout(() => {
+      const caretOffset = getCaretOffsetFromClick(e, textBox);
+      console.log("Alt-click computed caret offset:", caretOffset);
+      // Remove focus to avoid default editing behavior
+      textBox.blur();
+      // Cancel any ongoing speech
+      speechSynthesis.cancel();
+      // Use a short delay to ensure cancellation is processed, then restart from the clicked offset
+      setTimeout(() => {
+        currentCharIndex = caretOffset;
+        startSpeakingFrom(caretOffset);
+      }, 200);
+    }, 100); // Delay of 100ms to let selection update
+  } else {
+    // Normal click behavior: toggle pause/resume
+    // Remove focus immediately so editing doesn't interfere
+    textBox.blur();
+    if (speechSynthesis.speaking && !speechSynthesis.paused) {
+      speechSynthesis.pause();
+      textBox.style.borderColor = "#e76f51";
+      console.log("Speech paused");
+    } else if (speechSynthesis.paused) {
+      speechSynthesis.resume();
+      textBox.style.borderColor = "#80cbc4";
+      console.log("Speech resumed");
+    } else {
+      const caretOffset = getCaretOffsetFromClick(e, textBox);
+      console.log("Regular click computed caret offset:", caretOffset);
+      currentCharIndex = caretOffset;
+      startSpeakingFrom(caretOffset);
+      console.log("Speech started from offset:", caretOffset);
+    }
+  }
+});
+
+
+
+function getCaretOffsetFromClick(e, element) {
+  let caretOffset = 0;
+  // For browsers that support document.caretRangeFromPoint (Chrome, Edge, etc.)
+  if (document.caretRangeFromPoint) {
+    let range = document.caretRangeFromPoint(e.clientX, e.clientY);
+    if (range) {
+      let preCaretRange = document.createRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.startContainer, range.startOffset);
+      caretOffset = preCaretRange.toString().length;
+    }
+  }
+  // For Firefox and others that support document.caretPositionFromPoint
+  else if (document.caretPositionFromPoint) {
+    let pos = document.caretPositionFromPoint(e.clientX, e.clientY);
+    if (pos) {
+      let preCaretRange = document.createRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(pos.offsetNode, pos.offset);
+      caretOffset = preCaretRange.toString().length;
+    }
+  }
+  return caretOffset;
+}
+
